@@ -1,0 +1,36 @@
+:host{all:initial}
+*{box-sizing:border-box;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.p{width:300px;background:#fff;color:#16203a;border:1px solid #cfd6e6;border-radius:12px;box-shadow:0 10px 30px rgba(10,20,50,.28);font-size:13.5px;line-height:1.4;overflow:hidden}
+.h{display:flex;align-items:center;gap:8px;padding:9px 12px;background:#16203a;color:#fff;cursor:move;user-select:none}
+.h b{flex:1;font-size:13.5px}
+.dot{width:9px;height:9px;border-radius:50%;background:#8a94ad}
+.on .dot{background:#2ecc8f;box-shadow:0 0 0 3px rgba(46,204,143,.3)}
+.h button{all:unset;cursor:pointer;padding:0 6px;font-size:16px;line-height:1}
+.bd{padding:12px}
+.bd[hidden]{display:none}
+.big{font-size:38px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.sub{color:#5d6985;font-size:12px}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;margin:10px 0 4px;font-variant-numeric:tabular-nums}
+.g b{display:block;font-size:14px}
+.g span{color:#5d6985;font-size:11.5px}
+label.t{display:block;font-weight:700;margin:12px 0 5px}
+.r{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+input[type=number],select{font:inherit;border:1px solid #cfd6e6;border-radius:7px;padding:6px 8px;min-width:0;background:#fff;color:#16203a}
+input[type=number]{width:78px}
+select{flex:1}
+.note{color:#5d6985;font-size:12px;margin:5px 0 0}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.chip,.b{font:inherit;border:1px solid #cfd6e6;background:#eef1f6;color:#16203a;border-radius:999px;padding:3px 9px;cursor:pointer;font-size:12px}
+.b{border-radius:7px;padding:6px 10px;font-size:13px;font-weight:600;background:#fff}
+.chip:hover,.b:hover{border-color:#2f5bff}
+.b.l{border-color:#2f5bff;color:#2f5bff}
+kbd{font:600 13px system-ui,sans-serif;background:#eef1f6;border:1px solid #cfd6e6;border-bottom-width:2px;border-radius:6px;padding:2px 8px}
+.go{width:100%;margin-top:12px;border:0;border-radius:9px;padding:11px;font:700 15px system-ui,sans-serif;background:#12805c;color:#fff;cursor:pointer}
+.on .go{background:#c0392b}
+.st{min-height:1.4em;margin:8px 0 0;font-size:12.5px;color:#5d6985}
+.st.w{color:#a15c00}.st.e{color:#c0392b}
+.m{position:fixed;width:22px;height:22px;margin:-11px 0 0 -11px;border:3px solid #2f5bff;border-radius:50%;background:rgba(255,255,255,.7);pointer-events:none}
+.m[hidden]{display:none}
+.rd{display:flex;gap:6px;align-items:flex-start;margin:3px 0}
+.rd input{margin-top:2px}
+:disabled{opacity:.55}
