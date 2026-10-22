@@ -20,7 +20,12 @@ Edit `TARGET_URL` in `config.js`, then restart. You can also set it for one run:
     ├── README.md
     ├── package.json
     ├── config.js              URL and port
-    ├── server.js              fetches the site, injects the panel
+    ├── server.js              local server (node server.js)
+    ├── vercel.json            Vercel settings
+    ├── api/
+    │   └── index.js           Vercel entry point
+    ├── lib/
+    │   └── handler.js         fetches the site, injects the panel
     └── src/
         └── client/
             ├── clicker.js     click engine, hotkey, readout
@@ -34,3 +39,8 @@ The client files are read on every page load, so you can edit them and just refr
 - Sites that load their own data from their servers may break, since the page is served from localhost.
 - Links you click leave the clicker and go to the real site.
 - Clicks are script-generated; some sites ignore them.
+
+## Deploy to Vercel
+
+Push this folder to GitHub, import the repo in Vercel (Node preset, root `./`, no build command), and deploy.
+To change the site without editing code, add an environment variable named `TARGET_URL` in the Vercel project settings.
