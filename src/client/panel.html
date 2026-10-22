@@ -1,0 +1,54 @@
+<div class="p" id="p">
+  <div class="h" id="hd"><span class="dot"></span><b>Auto clicker</b><button id="min" title="Collapse">–</button></div>
+  <div class="bd" id="bd">
+    <div class="big" id="count">0</div>
+    <div class="sub">clicks sent</div>
+    <div class="g">
+      <div><b id="sRate">0</b><span>clicks per second</span></div>
+      <div><b id="sEl">0 s</b><span>elapsed</span></div>
+      <div><b id="sNext">–</b><span>until next click</span></div>
+      <div><b id="sLeft">–</b><span>time remaining</span></div>
+    </div>
+
+    <fieldset id="fs" style="border:0;padding:0;margin:0;min-width:0">
+      <label class="t">Speed</label>
+      <div class="r">
+        <input type="number" id="rn" value="10" min="0" step="any">
+        <span>per</span>
+        <select id="ru">
+          <option value="ns">nanosecond</option><option value="us">microsecond</option>
+          <option value="ms">millisecond</option><option value="s" selected>second</option>
+          <option value="min">minute</option><option value="h">hour</option>
+          <option value="d">day</option><option value="w">week</option>
+          <option value="mo">month (30 d)</option><option value="y">year (365 d)</option>
+        </select>
+      </div>
+      <div class="note" id="rnote"></div>
+      <div class="chips" id="chips">
+        <button class="chip" data-n="1" data-u="ns">1/ns</button>
+        <button class="chip" data-n="1" data-u="ms">1/ms</button>
+        <button class="chip" data-n="10" data-u="s">10/s</button>
+        <button class="chip" data-n="1" data-u="min">1/min</button>
+        <button class="chip" data-n="1" data-u="d">1/day</button>
+        <button class="chip" data-n="1" data-u="y">1/year</button>
+      </div>
+
+      <label class="t">Duration</label>
+      <div class="r">
+        <input type="number" id="dn" value="30" min="0" step="any">
+        <select id="du"><option value="s" selected>seconds</option><option value="min">minutes</option><option value="h">hours</option><option value="d">days</option><option value="y">years</option></select>
+      </div>
+      <div class="rd"><input type="checkbox" id="fe"><label for="fe">Keep clicking until I stop it</label></div>
+
+      <label class="t">Where to click</label>
+      <div class="rd"><input type="radio" name="tg" id="tc" value="cursor" checked><label for="tc">Wherever my cursor is</label></div>
+      <div class="rd"><input type="radio" name="tg" id="tf" value="fixed"><label for="tf">A fixed spot <button class="b" id="pick" style="margin-left:4px;padding:3px 8px">Pick spot</button></label></div>
+    </fieldset>
+
+    <label class="t">Toggle hotkey</label>
+    <div class="r"><kbd id="kshow">F6</kbd><button class="b" id="kbtn">Change</button></div>
+    <button class="go" id="go">Start clicking</button>
+    <div class="st" id="st"></div>
+  </div>
+</div>
+<div class="m" id="mk" hidden></div>
