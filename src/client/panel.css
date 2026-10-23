@@ -34,3 +34,6 @@ kbd{font:600 13px system-ui,sans-serif;background:#eef1f6;border:1px solid #cfd6
 .rd{display:flex;gap:6px;align-items:flex-start;margin:3px 0}
 .rd input{margin-top:2px}
 :disabled{opacity:.55}
+.nv{display:flex;gap:6px;margin-bottom:12px}
+.nv input{flex:1;min-width:0;border:1px solid #cfd6e6;border-radius:7px;padding:6px 8px;font:inherit;background:#fff;color:#16203a}
+.nv .b{padding:6px 9px}
