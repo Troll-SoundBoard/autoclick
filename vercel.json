@@ -1,6 +1,10 @@
 {
-  "rewrites": [{ "source": "/", "destination": "/api" }],
+  "rewrites": [
+    { "source": "/", "destination": "/api" },
+    { "source": "/b", "destination": "/api/b" },
+    { "source": "/__p", "destination": "/api/p" }
+  ],
   "functions": {
-    "api/index.js": { "includeFiles": "src/client/**" }
+    "api/*.js": { "includeFiles": "src/**" }
   }
 }
