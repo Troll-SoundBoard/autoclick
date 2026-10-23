@@ -59,7 +59,7 @@
   });
   document.addEventListener('click', e => {
     if (!picking || e.composedPath().includes(host)) return;
-    e.preventDefault(); e.stopPropagation();
+    e.preventDefault(); e.stopImmediatePropagation();
     picking = false; fixed = { x: e.clientX, y: e.clientY };
     const m = $('mk'); m.style.left = fixed.x + 'px'; m.style.top = fixed.y + 'px'; m.hidden = false;
     status('Spot set at ' + fixed.x + ', ' + fixed.y + '. It follows the window, not the scroll position.');
@@ -155,10 +155,61 @@
       return;
     }
     if (picking && e.key === 'Escape') { picking = false; status('Cancelled.'); return; }
+    const t = e.composedPath()[0];
+    const typing = t && (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable);
+    if (typing && !(e.ctrlKey || e.altKey || e.metaKey) && !/^F\d+$/.test(e.code)) return;
     if (e.repeat) return;
     if (comboOf(e) === hotkey) { e.preventDefault(); e.stopPropagation(); toggle(); }
   }, true);
   $('kbtn').addEventListener('click', () => { listening = true; $('kbtn').classList.add('l'); $('kbtn').textContent = 'Press a key…'; });
+
+  /* navigation: keep every page, link and search inside the proxy */
+  // location.origin is ours; plain '/b' would resolve against the site's <base href>.
+  const go = abs => location.assign(location.origin + '/b?u=' + encodeURIComponent(abs));
+  let engineKey = PANEL.defaultEngine;
+  try { engineKey = localStorage.getItem('ac.engine') || engineKey; } catch (e) {}
+  if (!PANEL.engines[engineKey]) engineKey = PANEL.defaultEngine;
+  const navigate = text => { const u = window.acResolve && window.acResolve(text, engineKey, PANEL.engines); if (u) go(u); };
+
+  $('nav').value = document.baseURI;
+  $('navgo').addEventListener('click', () => navigate($('nav').value));
+  $('nav').addEventListener('keydown', e => { if (e.key === 'Enter') navigate($('nav').value); });
+  ['keydown', 'keyup', 'keypress'].forEach(t => $('nav').addEventListener(t, e => e.stopPropagation()));
+  $('home').addEventListener('click', () => location.assign(location.origin + '/'));
+
+  document.addEventListener('click', e => {
+    if (e.defaultPrevented || e.composedPath().includes(host)) return;
+    if (e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+    const a = e.target.closest && e.target.closest('a[href],area[href]');
+    if (!a) return;
+    const href = (a.getAttribute('href') || '').trim();
+    if (/^(javascript:|mailto:|tel:|data:|blob:)/i.test(href)) return;
+    e.preventDefault();
+    if (href.charAt(0) === '#') {              // in-page link: <base> would otherwise send us to the real site
+      const id = decodeURIComponent(href.slice(1));
+      const el = id && (document.getElementById(id) || document.getElementsByName(id)[0]);
+      if (el) el.scrollIntoView(); else if (!id) window.scrollTo(0, 0);
+      return;
+    }
+    try {
+      let u = new URL(href, document.baseURI);
+      if (/(^|\.)google\.[a-z.]+$/i.test(u.hostname) && u.pathname === '/url') {   // unwrap Google result links
+        const q = u.searchParams.get('q') || u.searchParams.get('url');
+        if (q) u = new URL(q, document.baseURI);
+      }
+      if (/^https?:$/.test(u.protocol)) go(u.href);
+    } catch (err) {}
+  });
+  document.addEventListener('submit', e => {
+    const f = e.target;
+    if (e.defaultPrevented || !f || f.tagName !== 'FORM' || (f.getAttribute('method') || 'get').toLowerCase() !== 'get') return;
+    e.preventDefault();
+    try {
+      const u = new URL(f.getAttribute('action') || '', document.baseURI);
+      u.search = new URLSearchParams(new FormData(f)).toString();
+      go(u.href);
+    } catch (err) {}
+  });
 
   /* ui wiring */
   $('go').addEventListener('click', toggle);
