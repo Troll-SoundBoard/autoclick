@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Auto clicker browser</title>
+<style>
+  :root{--bg:#eef1f6;--card:#fff;--ink:#16203a;--muted:#5d6985;--line:#d5dbe8;--accent:#2f5bff}
+  @media (prefers-color-scheme:dark){:root{--bg:#0f1424;--card:#171e33;--ink:#e8ecf7;--muted:#9aa5c3;--line:#2a3352;--accent:#6f8cff}}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;justify-content:center;padding:12vh 16px 40px}
+  main{width:100%;max-width:640px}
+  h1{font-size:30px;margin:0 0 4px;letter-spacing:-.02em}
+  .sub{color:var(--muted);margin:0 0 22px}
+  form{display:flex;gap:8px;flex-wrap:wrap}
+  input[type=text]{flex:1 1 280px;min-width:0;font:inherit;padding:13px 16px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink)}
+  select,button{font:inherit;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);padding:12px 14px}
+  .go{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700;cursor:pointer}
+  input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid rgba(47,91,255,.4);outline-offset:1px}
+  h2{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:30px 0 10px}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+  .tile{text-align:left;cursor:pointer;padding:14px;border-radius:12px}
+  .tile:hover{border-color:var(--accent)}
+  .tile b{display:block}
+  .tile span{display:block;color:var(--muted);font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .rec{display:flex;flex-direction:column;gap:6px}
+  .rec button{text-align:left;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .clear{background:none;border:0;color:var(--muted);padding:0;cursor:pointer;text-decoration:underline;font-size:13px}
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main>
+  <h1>Auto clicker browser</h1>
+  <p class="sub">Search the web or type a site address. The clicker panel appears on every page.</p>
+  <form id="f" autocomplete="off">
+    <input type="text" id="q" placeholder="Search or type a URL" autofocus spellcheck="false" aria-label="Search or type a URL">
+    <select id="eng" aria-label="Search engine"></select>
+    <button class="go" type="submit">Go</button>
+  </form>
+
+  <h2>Sites</h2>
+  <div class="tiles" id="tiles"></div>
+
+  <div id="recWrap" hidden>
+    <h2>Recent <button class="clear" id="clear" type="button">clear</button></h2>
+    <div class="rec" id="rec"></div>
+  </div>
+</main>
+
+<script>
+const DATA = /*__DATA__*/{};
+/*__SEARCH__*/
+const $ = id => document.getElementById(id);
+let engine = DATA.defaultEngine;
+try { engine = localStorage.getItem('ac.engine') || engine; } catch (e) {}
+if (!DATA.engines[engine]) engine = DATA.defaultEngine;
+
+Object.keys(DATA.engines).forEach(k => {
+  const o = document.createElement('option'); o.value = k; o.textContent = DATA.engines[k].name; $('eng').appendChild(o);
+});
+$('eng').value = engine;
+$('eng').addEventListener('change', () => { engine = $('eng').value; try { localStorage.setItem('ac.engine', engine); } catch (e) {} });
+
+function remember(url) {
+  try {
+    const list = JSON.parse(localStorage.getItem('ac.recent') || '[]').filter(x => x !== url);
+    list.unshift(url); localStorage.setItem('ac.recent', JSON.stringify(list.slice(0, 8)));
+  } catch (e) {}
+}
+function openUrl(url) { remember(url); location.assign('/b?u=' + encodeURIComponent(url)); }
+
+$('f').addEventListener('submit', e => {
+  e.preventDefault();
+  const u = acResolve($('q').value, engine, DATA.engines);
+  if (u) openUrl(u);
+});
+
+DATA.shortcuts.forEach(s => {
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'tile';
+  const n = document.createElement('b'); n.textContent = s.name;
+  const h = document.createElement('span'); try { h.textContent = new URL(s.url).hostname; } catch (e) { h.textContent = s.url; }
+  b.append(n, h); b.addEventListener('click', () => openUrl(s.url)); $('tiles').appendChild(b);
+});
+
+function drawRecent() {
+  let list = []; try { list = JSON.parse(localStorage.getItem('ac.recent') || '[]'); } catch (e) {}
+  $('recWrap').hidden = !list.length; $('rec').textContent = '';
+  list.forEach(u => {
+    const b = document.createElement('button'); b.type = 'button'; b.textContent = u;
+    b.addEventListener('click', () => openUrl(u)); $('rec').appendChild(b);
+  });
+}
+$('clear').addEventListener('click', () => { try { localStorage.removeItem('ac.recent'); } catch (e) {} drawRecent(); });
+drawRecent();
+</script>
+</body>
+</html>
